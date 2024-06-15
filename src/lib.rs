@@ -1,8 +1,8 @@
-use stylist::{Style};
 use yew::{function_component, html, Html};
 use gloo::console::log;
 mod components;
 use components::atoms::main_title::MainTitle;
+use components::organisms::appview::AppView;
 const STYLE_FILE: &str = include_str!("styles/main.css");
 
 
@@ -17,6 +17,7 @@ pub fn app() -> Html {
     <>
         <div>
             <MainTitle title="Planen oder Anschauen"/>
+            <AppView/>
         </div>
     </>
 

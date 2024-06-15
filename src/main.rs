@@ -1,4 +1,4 @@
-use simpleplan::{App};
+use simpleplan::App;
 
 
 

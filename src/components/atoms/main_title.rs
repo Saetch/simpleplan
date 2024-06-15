@@ -1,5 +1,5 @@
 use stylist::yew::styled_component;
-use yew::{function_component, html, Html, Properties};
+use yew::{ html, Html, Properties};
 
 #[derive(PartialEq, Properties)]
 pub(crate) struct Props{
