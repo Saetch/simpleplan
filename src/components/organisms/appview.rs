@@ -2,18 +2,14 @@ use fxhash::FxHashMap;
 use gloo::console::log;
 use serde::Deserialize;
 use stylist::yew::styled_component;
-use yew::{html, Html};
+use yew::{html, use_state, Html};
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 pub(crate) struct State {
-    // Example stuff:
-    pub(crate) label: String,
-
-    pub(crate) value: f32,
     pub(crate) data: Daten,
     pub(crate) selected_lms: Vec<(String, u16)>,
-    pub(crate) new_selection: Option<String>,
     pub(crate) view: View,
+    pub(crate) viewing_contents : bool
 }
 
 
@@ -37,6 +33,7 @@ fn load_data() -> Daten{
 
 #[styled_component(AppView)]
 pub(crate) fn app_view() -> Html {
+    //let state = use_state(|| State::initial());
     let data = load_data();
     let str = format!("{:?}", data);
     log!(&str);
@@ -44,18 +41,26 @@ pub(crate) fn app_view() -> Html {
     html! {
         <div>
             { 
-                data.lebensmittel.iter().map(|(key, value)| {
+                if true {
+                    data.lebensmittel.iter().map(|(key, value)| {
+                        html! {
+                            <div>
+                                <p>{key}</p>
+                                <p>
+                                {
+                                    format!("{:?}", value)
+                                }
+                                </p>
+                            </div>
+                        }
+                    }).collect::<Html>()
+                }
+                else {
                     html! {
-                        <div>
-                            <p>{key}</p>
-                            <p>
-                            {
-                                format!("{:?}", value)
-                            }
-                            </p>
-                        </div>
+                        <p>{"View 2"}</p>
                     }
-                }).collect::<Html>()
+                
+                }
             }
         </div>
     }
@@ -129,6 +134,19 @@ fn fix_data(mut data: Daten) -> Daten{
         lm.as_mut().unwrap().insert(key.clone(), *value);
     }
 
+    let kkkey= "geröstetegesalzeneKürbiskerne";
+    let key_value = data.lebensmittel.get(kkkey).unwrap().clone();
+    data.lebensmittel.remove(kkkey);
+    data.lebensmittel.insert("geröstete gesalzene Kürbiskerne".to_owned(), key_value);
+
+
+    let bkey = "Butter";
+    let key_value = data.lebensmittel.get(bkey).unwrap().clone();
+    data.lebensmittel.remove(bkey);
+    let mut lm = data.lebensmittel.get_mut("Süßrahmbutter");
+    for (key, value) in key_value.iter(){
+        lm.as_mut().unwrap().insert(key.clone(), *value);
+    }
 
     return data;
 }
