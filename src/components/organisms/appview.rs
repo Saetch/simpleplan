@@ -1,15 +1,15 @@
+use _State::selected_lms;
 use fxhash::FxHashMap;
 use gloo::console::log;
 use serde::Deserialize;
-use stylist::yew::styled_component;
-use yew::{html, use_state, Html};
+use stylist::{yew::styled_component, Style};
+use yew::{html, use_state, Callback, Html, MouseEvent, Properties, UseStateHandle};
+use crate::components::molecules::lm_table::{LmTable, TableUpdate, _LmTableProps::on_table_update};
 
-/// We derive Deserialize/Serialize so we can persist app state on shutdown.
+#[derive(Debug, Clone, Properties, PartialEq)]
 pub(crate) struct State {
     pub(crate) data: Daten,
-    pub(crate) selected_lms: Vec<(String, u16)>,
-    pub(crate) view: View,
-    pub(crate) viewing_contents : bool
+    pub selected_lms: Vec<(String, u16)>,
 }
 
 
@@ -31,18 +31,94 @@ fn load_data() -> Daten{
     fix_data(data)
 }
 
+impl State {
+    pub(crate) fn initial() -> Self {
+        Self {
+            data: load_data(),
+            selected_lms: Vec::new(),
+        }
+    }
+}
+
 #[styled_component(AppView)]
 pub(crate) fn app_view() -> Html {
-    //let state = use_state(|| State::initial());
-    let data = load_data();
-    let str = format!("{:?}", data);
-    log!(&str);
+    let view = use_state(|| View::View1);
+    let mut state = use_state(|| State::initial());
+    let str = use_state(||String::from("Inhalt darstellen")).clone();
+    let onclick: Callback<MouseEvent> = {
+        let view = view.clone();
+        let str = str.clone();
+        Callback::from(move |_| {
+            let new_view = match *view {
+                View::View1 => View::View2,
+                View::View2 => View::View1,
+                View::View3 => View::View1,
+            };
+            let new_str = if *str == "Inhalt darstellen"{
+                log!("Inhalt darstellen wurde geändert");
+                "Zum Planen wechseln"
+            }else{
+                log!("Zum Planen wechseln wurde geändert");
+                "Inhalt darstellen"
+            };
+            str.set(new_str.to_string());
+            view.set(new_view);
+        })
+    };
+    log!("Add Lebensmittel!");
+    let mut lms = state.selected_lms.clone();
+    if lms.is_empty(){
+        lms.push(("Möhregegart".to_string(), 100));
+        lms.push(("Kaputthauen".to_string(), 100));
+        state.set ( State { selected_lms: lms, ..(*state).clone() });
+    }
+    let lms = state.selected_lms.clone();
+    let state_clone = state.clone();
+    let table_update_callback = Callback::from(move |table_update: TableUpdate| {
+        match table_update {
+            TableUpdate::Update(name, menge) => {
+                let state = state_clone.clone();
+                let mut lms = state.selected_lms.clone();
+                let index = lms.iter().position(|(lm_name, _)| lm_name == &name);
+                if let Some(index) = index {
+                    lms[index] = (name, menge);
+                    state.set(State { selected_lms: lms, ..(*state).clone() });
+                }
+            }
+            TableUpdate::Remove(name) => {
+                let state = state_clone.clone();
+                let mut lms = state.selected_lms.clone();
+                let index = lms.iter().position(|(lm_name, _)| lm_name == &name);
+                if let Some(index) = index {
+                    lms.remove(index);
+                    state.set(State { selected_lms: lms, ..(*state).clone() })
+                }
+            }
+        }
+    });
 
     html! {
         <div>
+            <button {onclick}>{ (*str).clone()  }</button>
             { 
-                if true {
-                    data.lebensmittel.iter().map(|(key, value)| {
+                if *view == View::View1 {
+                    let bool = state.selected_lms.is_empty();
+                    if bool{
+                        html!{
+                            <div>
+                                <p>{"Keine Lebensmittel ausgewählt"}</p>
+                            </div>
+                        }
+                    }else{
+                        html!{
+                            <LmTable selected_lms={state.selected_lms.clone()} on_table_update={table_update_callback}/>
+                        }
+
+                    }
+                }
+                else {
+
+                    state.data.lebensmittel.iter().map(|(key, value)| {
                         html! {
                             <div>
                                 <p>{key}</p>
@@ -54,12 +130,6 @@ pub(crate) fn app_view() -> Html {
                             </div>
                         }
                     }).collect::<Html>()
-                }
-                else {
-                    html! {
-                        <p>{"View 2"}</p>
-                    }
-                
                 }
             }
         </div>
@@ -77,7 +147,7 @@ pub (crate) enum View {
     View3,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone, PartialEq)]
 pub(crate) struct TagesBedarfInMg {
     pub(crate) name: String,
     pub(crate) wert: f64,
@@ -87,7 +157,7 @@ pub(crate) type LMInformation = FxHashMap<String, LMConcentration>;
 pub(crate) type LM = FxHashMap<String, LMInformation>;
 pub(crate) type LMConcentration = f64;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, PartialEq)]
 pub(crate) struct Daten {
     pub(crate) lebensmittel: FxHashMap<String, LMInformation>,
     pub(crate) tagesbedarf: Vec<TagesBedarfInMg>,
