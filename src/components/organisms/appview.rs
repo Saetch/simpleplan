@@ -68,12 +68,14 @@ pub(crate) fn app_view() -> Html {
     log!("Add Lebensmittel!");
     let mut lms = state.selected_lms.clone();
     if lms.is_empty(){
-        lms.push(("Möhregegart".to_string(), 100));
-        lms.push(("Kaputthauen".to_string(), 100));
+        for (key, _) in state.data.lebensmittel.iter(){
+            lms.push((key.clone(), 0));
+        }
         state.set ( State { selected_lms: lms, ..(*state).clone() });
     }
     let lms = state.selected_lms.clone();
     let state_clone = state.clone();
+    let ingreds = state.data.tagesbedarf.clone();
     let table_update_callback = Callback::from(move |table_update: TableUpdate| {
         match table_update {
             TableUpdate::Update(name, menge) => {
@@ -111,7 +113,7 @@ pub(crate) fn app_view() -> Html {
                         }
                     }else{
                         html!{
-                            <LmTable selected_lms={state.selected_lms.clone()} on_table_update={table_update_callback}/>
+                            <LmTable selected_lms={state.selected_lms.clone()} on_table_update={table_update_callback} ingreds={ingreds} data={state.data.clone()}/>
                         }
 
                     }
