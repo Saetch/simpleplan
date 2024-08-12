@@ -72,6 +72,7 @@ pub fn view(props: &LmTableProps) -> Html {
         <tr>
             <th>{"Inhalt"}</th>
             <th>{"Menge in mg"}</th>
+            <th>{"Tagesbedarf in mg"}</th>
             <th>{"% des Tagesbedarfs"}</th>
         </tr>
     </thead>
@@ -109,6 +110,7 @@ pub fn view(props: &LmTableProps) -> Html {
                         <tr>
                             <td>{tagesbedarf.name.clone()}</td>
                             <td>{menge}</td>
+                            <td>{bedarf_in_mg}</td>
                             <td>{if menge > 0.0 { (menge / bedarf_in_mg) * 100.0 } else { 0.0 }} </td>
                         </tr>
                     
