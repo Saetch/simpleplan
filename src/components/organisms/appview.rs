@@ -68,8 +68,10 @@ pub(crate) fn app_view() -> Html {
     log!("Add Lebensmittel!");
     let mut lms = state.selected_lms.clone();
     if lms.is_empty(){
-        for (key, _) in state.data.lebensmittel.iter(){
-            lms.push((key.clone(), 0));
+        let mut ordered_lms = state.data.lebensmittel.keys().collect::<Vec<&String>>();
+        ordered_lms.sort();
+        for key in ordered_lms.iter(){
+            lms.push((String::from(*key), 0));
         }
         state.set ( State { selected_lms: lms, ..(*state).clone() });
     }
@@ -198,20 +200,6 @@ fn fix_data(mut data: Daten) -> Daten{
 
     }
 
-    let fixable_key = "Vollkornrei gegarts";
-    let key_value = data.lebensmittel.get(fixable_key).unwrap().clone();
-    data.lebensmittel.remove(fixable_key);
-    let mut lm = data.lebensmittel.get_mut("Vollkornreis gegart");
-    for (key, value) in key_value.iter(){
-        lm.as_mut().unwrap().insert(key.clone(), *value);
-    }
-
-    let kkkey= "geröstetegesalzeneKürbiskerne";
-    let key_value = data.lebensmittel.get(kkkey).unwrap().clone();
-    data.lebensmittel.remove(kkkey);
-    data.lebensmittel.insert("geröstete gesalzene Kürbiskerne".to_owned(), key_value);
-
-
     let bkey = "Butter";
     let key_value = data.lebensmittel.get(bkey).unwrap().clone();
     data.lebensmittel.remove(bkey);
@@ -219,6 +207,6 @@ fn fix_data(mut data: Daten) -> Daten{
     for (key, value) in key_value.iter(){
         lm.as_mut().unwrap().insert(key.clone(), *value);
     }
-
+    
     return data;
 }

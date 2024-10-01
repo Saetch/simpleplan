@@ -25,7 +25,6 @@ pub enum TableUpdate{
 pub fn view(props: &LmTableProps) -> Html {
     let table_style = include_str!("../../styles/table.css");
     let style = Style::new(table_style).unwrap();
-
     html! {
         <div class={style}>
     <table class="styled-table">
@@ -105,7 +104,9 @@ pub fn view(props: &LmTableProps) -> Html {
                     }
                 }
             }
-
+            menge = menge * 1000.0;
+            menge = menge.round();
+            menge = menge / 1000.0;
             html!{
                         <tr>
                             <td>{tagesbedarf.name.clone()}</td>
