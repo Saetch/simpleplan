@@ -68,11 +68,36 @@ pub(crate) fn app_view() -> Html {
     log!("Add Lebensmittel!");
     let mut lms = state.selected_lms.clone();
     if lms.is_empty(){
-        let mut ordered_lms = state.data.lebensmittel.keys().collect::<Vec<&String>>();
-        ordered_lms.sort();
-        for key in ordered_lms.iter(){
-            lms.push((String::from(*key), 0));
-        }
+        lms = Vec::new();
+        lms.push(("Honigmelone".to_string(), 0));
+        lms.push(("Parboiledreis gegart".to_string(), 0));
+        lms.push(("Haferflocken".to_string(), 0));
+        lms.push(("Butterkäse".to_string(), 0));
+        lms.push(("Süßrahmbutter".to_string(), 0));
+        lms.push(("Brokkoli gegart".to_string(), 0));
+        lms.push(("Blumenkohl gegart".to_string(), 0));
+        lms.push(("Möhre gegart".to_string(), 0));
+        lms.push(("Pastinake gegart".to_string(), 0));
+        lms.push(("Hokkaidokürbis gegart".to_string(), 0));
+        lms.push(("Eisbergsalat gegart".to_string(), 0));
+        lms.push(("Süßkartoffel gegart".to_string(), 0));
+        lms.push(("Rapsöl".to_string(), 0));
+        lms.push(("Olivenöl".to_string(), 0));
+        lms.push(("Hirse gegart".to_string(), 0));
+        lms.push(("Quinoa gegart".to_string(), 0));
+        lms.push(("Kartoffeln gegart".to_string(), 0));
+        lms.push(("Vollkornreis gegart".to_string(), 0));
+        lms.push(("Hähnchenbrustfilet gebraten".to_string(), 0));
+        lms.push(("Lachs gekocht".to_string(), 0));
+        lms.push(("Eigelb gegart".to_string(), 0));
+        lms.push(("Joghurt".to_string(), 0));
+        lms.push(("Macadamianuss".to_string(), 0));
+        lms.push(("Kürbiskerne".to_string(), 0));
+        lms.push(("Paranuss".to_string(), 0));
+        lms.push(("Zucchini gegart".to_string(), 0));
+        lms.push(("Gurke gegart".to_string(), 0));
+        lms.push(("Urdinkelnudeln gegart".to_string(), 0));
+
         state.set ( State { selected_lms: lms, ..(*state).clone() });
     }
     let lms = state.selected_lms.clone();
