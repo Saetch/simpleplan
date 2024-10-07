@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan</title>
+    <style>
+    </style>
+
+<link rel="modulepreload" href="https://saetch.github.io/simpleplan/simpleplan-7f6c6c53aa7b9fd8.js" crossorigin=anonymous integrity="sha384-w6iucLMK51dRGAz7dnv4ovrl6KwayPIy9GuoqnyUxMd63Iu74yXfDb4c2rDM1Cn5">
+<link rel="preload" href="https://saetch.github.io/simpleplan/simpleplan-7f6c6c53aa7b9fd8_bg.wasm" crossorigin=anonymous integrity="sha384-lqEgL5bNpZbbhiQJ7DX9u6or7DZPAOmeel2B7Kb9RPwb8O7tTzEiq2Joo8EZNRsE" as="fetch" type="application/wasm"></head>
+<body>
+    
+
+<script type="module" nonce="RO8j6pD8Xbyzo+W+M96upw==">
+import init, * as bindings from 'https://saetch.github.io/simpleplan/simpleplan-7f6c6c53aa7b9fd8.js';
+const wasm = await init('https://saetch.github.io/simpleplan/simpleplan-7f6c6c53aa7b9fd8_bg.wasm');
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
