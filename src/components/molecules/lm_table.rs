@@ -55,7 +55,7 @@ pub fn view(props: &LmTableProps) -> Html {
                                 <input type="range"
                                 value={menge.to_string()}
                                 class="slider__input"
-                                min={0} max={300} step={5}
+                                min={0} max={800} step={5}
                                 {oninput}
                             />
                             </td>
